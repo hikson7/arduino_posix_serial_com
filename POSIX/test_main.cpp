@@ -1,5 +1,7 @@
 
 #include <iostream>
+#include <string>
+#include <array>
 #include <chrono>
 #include <thread>
 
@@ -8,49 +10,29 @@
 auto main(void)->int {
     std::cout << "hello world!" << std::endl;
 
-    SerialDescriptor sd("/dev/tty.usbmodem14101", 9600);
+    SerialDescriptor sd("/dev/tty.usbserial-1410", 9600);
     sd.open();
-    unsigned char handshake = 0x00;
-    unsigned char servo = 0x01;
     unsigned char reply;
 
     std::this_thread::sleep_for(std::chrono::milliseconds(1500));
+    // std::string message;
+    // message.append("<");
+    // message.append(static_cast<char>(5));
+    // message.append(static_cast<char>(false));
+    // message.append(static_cast<char>());
+    // message.append(">");
+    std::array<unsigned char, 7> message;
+    message.at(0) = static_cast<unsigned char> ('<');
+    message.at(1) = static_cast<unsigned char> (5);
+    message.at(2) = static_cast<unsigned char> (false);
+    message.at(3) = static_cast<unsigned char> (150);
+    message.at(4) = static_cast<unsigned char> (150);
+    message.at(5) = static_cast<unsigned char> (0);
+    message.at(6) = static_cast<unsigned char> ('>');
 
-    std::cout << "about to handshake" << std::endl;
-    sd.write(&handshake, sizeof(char));
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(2500));
-    std::cout << "sending servo command" << std::endl;
-    sd.write(&servo, sizeof(char));
-
-    std::cout << "sending servo id" << std::endl;
-    sd.write((char*) 0x00, sizeof(char));
-    sd.read(&reply, 1);
-    std::cout << (int) reply << std::endl;
-
-    std::cout << "sending servo angle" << std::endl;
-    sd.write((char*) 0x00, sizeof(char));
-    sd.read(&reply, 1);
-    std::cout << (int)reply << std::endl;
-
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-    std::cout << "sending servo command" << std::endl;
-    sd.write(&servo, sizeof(char));
-    // sd.read(&reply, 1);
-    // std::cout << reply << std::endl;
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(1500));
-    std::cout << "sending servo id" << std::endl;
-    sd.write((char*) 0x01, 2*sizeof(char));
-    sd.read(&reply, 1);
-    std::cout << reply << std::endl;
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(1500));
-    std::cout << "sending servo angle" << std::endl;
-    sd.write((char*) 0x5A, 2*sizeof(char));
-    sd.read(&reply, 1);
-    std::cout << reply << std::endl;
+    sd.write(&message, sizeof(unsigned char)*message.size());
+    sd.read(&reply, 2);
+    std::cout << static_cast<char> (reply) << std::endl;
 
     return 0;
 }
