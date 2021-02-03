@@ -1,3 +1,11 @@
+/**
+ * @file sercom.cpp
+ * @author Hikari Hashida
+ * @brief Serial communication class for POSIX based system and a microcontroller (tested on Arduino).
+ * @version 0.1
+ * @date 2021-01-31
+ * 
+ */
 
 #include <fcntl.h>
 #include <termios.h>
@@ -5,18 +13,32 @@
 
 #include "sercom.h"
 
+/**
+ * @brief Construct a new Serial Descriptor:: Serial Descriptor object
+ * 
+ * @param device_path 
+ * @param baudrate 
+ */
 SerialDescriptor::SerialDescriptor(
     const char* device_path, const int baudrate) {
     baudrate_ = baudrate;
     device_path_.append(device_path);
 }
 
+/**
+ * @brief Destroy the Serial Descriptor:: Serial Descriptor object
+ * 
+ */
 SerialDescriptor::~SerialDescriptor() {
     if (::close(fd_) < 0) {
         perror("port error");
     }
 }
 
+/**
+ * @brief POSIX wrapper for opening serial connection with the Arduino.
+ * 
+ */
 void SerialDescriptor::open() {
     int c_flag =    O_RDWR      // read/write operation
                 |   O_NOCTTY    // not a controlling terminal
@@ -60,11 +82,25 @@ void SerialDescriptor::open() {
     tcsetattr(fd_, TCSANOW, &port_option);
 }
 
+/**
+ * @brief POSIX serial read() wrapper.
+ * 
+ * @param reply buffer array to store received message
+ * @param buff_len length of the storing buffer array
+ * @return number of bytes received
+ */
 int SerialDescriptor::read(void* reply, int buff_len) {
     int num = ::read(fd_, reply, buff_len);
     return num;
 }
 
+/**
+ * @brief POSIX serial write() wrapper
+ * 
+ * @param msg message buffer array to send
+ * @param nbyte number of bytes to be sent
+ * @return number of successful bytes
+ */
 int SerialDescriptor::write(void* msg, int nbyte) {
     int num = ::write(fd_, msg, nbyte);
     tcdrain(fd_);

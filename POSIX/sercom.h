@@ -1,4 +1,11 @@
-
+/**
+ * @file sercom.h
+ * @author Hikari Hashida
+ * @brief Serial communication class for POSIX based system and a microcontroller (tested on Arduino).
+ * @version 0.1
+ * @date 2021-01-31
+ * 
+ */
 #include <string>
 
 class SerialDescriptor {
