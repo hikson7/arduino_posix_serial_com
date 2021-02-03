@@ -4,7 +4,7 @@
  * @brief  Arduino code to demonstrate simple multi-byte serial communicaton protocol. Indicated via WS2812 LEDs.
  * @version 0.1
  * @date 2021-01-29
- * 
+ *      
  */
 #include <Adafruit_NeoPixel.h>
 
