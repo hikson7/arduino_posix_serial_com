@@ -10,6 +10,7 @@
 #include <fcntl.h>
 #include <termios.h>
 #include <unistd.h>
+#include <sys/ioctl.h>
 
 #include "sercom.h"
 
@@ -75,7 +76,7 @@ void SerialDescriptor::open() {
     port_option.c_cflag &= ~(PARENB | PARODD);
     /* hardware based flow control */
     port_option.c_cflag &= ~CRTSCTS;
-    /* software based flow control */
+    /* software based flow control (outgoing/incoming) */
     port_option.c_iflag &= ~(IXON | IXOFF | IXANY);
     /* set cononical mode */
     port_option.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
@@ -91,6 +92,8 @@ void SerialDescriptor::open() {
  * @param buff_len length of the storing buffer array
  * @return number of bytes received
  */
+#include <iostream>
+
 int SerialDescriptor::read(void* reply, int buff_len) {
     int num;
     if (timeout_.tv_sec > 0 || timeout_.tv_usec > 0) {

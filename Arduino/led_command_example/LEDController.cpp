@@ -1,5 +1,5 @@
 /**
- * @file INDICator.cpp
+ * @file LEDController.cpp
  * @author Hikari Hashida
  * @brief  Arduino code to demonstrate simple multi-byte serial communicaton protocol. Indicated via WS2812 LEDs.
  * @version 0.1
