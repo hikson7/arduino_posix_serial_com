@@ -23,6 +23,8 @@ SerialDescriptor::SerialDescriptor(
     const char* device_path, const int baudrate) {
     baudrate_ = baudrate;
     device_path_.append(device_path);
+    timeout_.tv_sec = 0;
+    timeout_.tv_usec = 0;
 }
 
 /**
@@ -90,7 +92,18 @@ void SerialDescriptor::open() {
  * @return number of bytes received
  */
 int SerialDescriptor::read(void* reply, int buff_len) {
-    int num = ::read(fd_, reply, buff_len);
+    int num;
+    if (timeout_.tv_sec > 0 || timeout_.tv_usec > 0) {
+        FD_ZERO(&read_fds_);
+        FD_SET(fd_, &read_fds_);
+        /* wait til data is available with timeout */
+        if (select(fd_+1, &read_fds_, NULL, NULL, &timeout_) > 0) {
+            num = ::read(fd_, reply, buff_len);
+        }
+    } else {
+        /* no timeout */
+        num = ::read(fd_, reply, buff_len);
+    }
     return num;
 }
 
@@ -105,4 +118,17 @@ int SerialDescriptor::write(void* msg, int nbyte) {
     int num = ::write(fd_, msg, nbyte);
     tcdrain(fd_);
     return num;
+}
+
+void SerialDescriptor::setTimeout(int sec, int u_sec) {
+    timeout_.tv_sec = sec;
+    timeout_.tv_usec = u_sec;
+}
+
+void SerialDescriptor::setTimeoutSec(uint16_t sec) {
+    timeout_.tv_sec = sec;
+}
+
+void SerialDescriptor::setTimeoutMicroSec(uint16_t usec) {
+    timeout_.tv_usec = usec;
 }

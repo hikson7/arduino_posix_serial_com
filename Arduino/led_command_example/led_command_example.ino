@@ -15,7 +15,7 @@
 
 constexpr static uint8_t DELAY_VALUE = 20;  // [ms]
 
-LEDController lc = LEDIndicator();
+LEDController lc = LEDController();
 
 void setup() {
   Serial.begin(9600);
@@ -24,7 +24,8 @@ void setup() {
 
 void loop() {
 
-  lc.updateRoverStatus();
+  lc.readDataFromSerial();
+  lc.indicateLED();
 
   delay(DELAY_VALUE);  
 }

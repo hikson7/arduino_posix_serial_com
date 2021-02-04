@@ -5,8 +5,6 @@
  * @version 0.1
  * @date 2021-02-03
  * 
- * @copyright Copyright (c) 2021
- * 
  */
 
 #include <Adafruit_NeoPixel.h>
@@ -21,19 +19,18 @@ struct __attribute__((__packed__)) LEDControllerCommand {
     uint8_t brightness;
 };
 
-constexpr static uint8_t PIN_STATUS_INDIC = 12;
-constexpr static uint8_t NUM_STATUS_INDIC_PIXELS = 8;
+constexpr static uint8_t PIN_INDIC = 12;
+constexpr static uint8_t NUM_INDIC_PIXELS = 8;
 constexpr static uint8_t START_MARKER = '<';
 constexpr static uint8_t END_MARKER = '>';
 
 class LEDController {
  public:
     LEDController();
-    void updateRoverStatus();
     void readDataFromSerial();
     void indicateLED();
     void setBrightness(uint8_t brightness);
-    void LEDController::setAndShowLEDStatus(uint8_t red_val,
+    void setAndShowLEDStatus(uint8_t red_val,
          uint8_t green_val, uint8_t blue_val);
  private:
     /* status indicator struct to store the indication parameters */
@@ -43,5 +40,5 @@ class LEDController {
     /* data receiving in progress */
     bool in_progress_;
     bool is_new_data_ = false;
-    Adafruit_NeoPixel led_status_indicator_;
+    Adafruit_NeoPixel led_indicator_;
 };

@@ -16,11 +16,6 @@ LEDController::LEDController() {
     led_indicator_.begin();
 }
 
-void LEDController::updateRoverStatus() {
-    readDataFromSerial();
-    indicateLED();
-}
-
 /**
  * @brief Read and extract rover status indication data from serial.
  * As stream of data is received byte-by-byte, it will be placed straight into LEDControllerCommand struct. 

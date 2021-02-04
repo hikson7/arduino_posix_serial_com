@@ -1,7 +1,7 @@
 /**
  * @file test_main.cpp
  * @author Hikari Hashida
- * @brief testing 
+ * @brief Very basic serial com tester
  * @version 0.1
  * @date 2021-01-31
  * 
@@ -21,6 +21,7 @@ constexpr char arduino_device_path[] = "/dev/tty.usbserial-1410";
 auto main(int argc, char **argv)->int {
     SerialDescriptor sd(arduino_device_path, 9600);
     sd.open();
+    sd.setTimeoutMicroSec(50);
     char reply[2];
 
     std::this_thread::sleep_for(std::chrono::milliseconds(1500));
